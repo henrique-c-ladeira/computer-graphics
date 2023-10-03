@@ -1,0 +1,6 @@
+*.o
+main
+build/
+.vscode/
+.DS_Store
+xcuserdata
