@@ -24,7 +24,6 @@ void Window::display(void (*loop)())
   while (!glfwWindowShouldClose(window))
   {
     /* Render here */
-    // render.draw();
     glClear(GL_COLOR_BUFFER_BIT);
     loop();
 

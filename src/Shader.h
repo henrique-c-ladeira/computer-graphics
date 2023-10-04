@@ -1,18 +1,18 @@
 #pragma once
-#include <string>
+#include <OpenGL/gl3.h>
 
 enum ShaderType
 {
-  fragmentShader,
-  vertexShader
+  fragmentShader = GL_FRAGMENT_SHADER,
+  vertexShader = GL_VERTEX_SHADER
 };
 
 class Shader
 {
 private:
-  const std::string fileName;
-  const ShaderType shaderType;
+  uint32_t shaderHandle;
+  ShaderType shaderType;
 
 public:
-  Shader(std::string fileName, ShaderType shaderType) : fileName(fileName), shaderType(shaderType){};
+  Shader(const char *filename, ShaderType shaderType);
 };

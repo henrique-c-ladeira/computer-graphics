@@ -1,10 +1,6 @@
 #pragma once
-#include <OpenGL/OpenGL.h>
-#include <GLUT/glut.h>
 #include <OpenGL/gl3.h>
-#include <OpenGL/gl3ext.h>
 #include <vector>
-#include <glm/vec2.hpp>
 
 #define BUFFER_OFFSET(offset) ((GLvoid *)(offset))
 
