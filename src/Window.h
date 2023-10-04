@@ -8,8 +8,7 @@ private:
   GLFWwindow *window;
 
 public:
-  Window(){};
-  // ~Window();
-  void init();
-  void display();
+  Window();
+  ~Window();
+  void display(void (*loop)());
 };

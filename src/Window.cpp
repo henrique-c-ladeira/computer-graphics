@@ -1,6 +1,6 @@
 #include "Window.h"
 
-void Window::init()
+Window::Window()
 {
   if (!glfwInit())
     exit(EXIT_FAILURE);
@@ -9,10 +9,7 @@ void Window::init()
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-};
 
-void Window::display()
-{
   window = glfwCreateWindow(512, 512, "Hello World", NULL, NULL);
   if (!window)
   {
@@ -20,14 +17,18 @@ void Window::display()
     exit(EXIT_FAILURE);
   }
   glfwMakeContextCurrent(window);
+};
+
+void Window::display(void (*loop)())
+{
   while (!glfwWindowShouldClose(window))
   {
     /* Render here */
     // render.draw();
-    // glClear(GL_COLOR_BUFFER_BIT);
-    // glUniform1f(rotationAngleLocation, rotationAngle);
-    // glDrawArrays(GL_TRIANGLES, 0, NumTriangles);
-    // glFlush();
+    glClear(GL_COLOR_BUFFER_BIT);
+    loop();
+
+    glFlush();
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 
@@ -36,7 +37,7 @@ void Window::display()
   }
 };
 
-// Window::~Window()
-// {
-//   // glfwTerminate();
-// }
+Window::~Window()
+{
+  glfwTerminate();
+}
