@@ -34,6 +34,8 @@ Shader::Shader(const char *filename, ShaderType shaderType)
     exit(EXIT_FAILURE);
   }
   shaderHandle = glCreateShader(shaderType);
+  glShaderSource(shaderHandle, 1, (const GLchar **)&source, NULL);
+  glCompileShader(shaderHandle);
 
   GLint compiled;
   glGetShaderiv(shaderHandle, GL_COMPILE_STATUS, &compiled);
@@ -49,4 +51,9 @@ Shader::Shader(const char *filename, ShaderType shaderType)
 
     exit(EXIT_FAILURE);
   }
+}
+
+uint32_t Shader::getHandle()
+{
+  return shaderHandle;
 }

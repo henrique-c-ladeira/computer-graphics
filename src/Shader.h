@@ -3,8 +3,8 @@
 
 enum ShaderType
 {
-  fragmentShader = GL_FRAGMENT_SHADER,
-  vertexShader = GL_VERTEX_SHADER
+  fragmentShaderType = GL_FRAGMENT_SHADER,
+  vertexShaderType = GL_VERTEX_SHADER
 };
 
 class Shader
@@ -15,4 +15,5 @@ private:
 
 public:
   Shader(const char *filename, ShaderType shaderType);
+  uint32_t getHandle();
 };

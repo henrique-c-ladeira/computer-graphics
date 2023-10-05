@@ -1,27 +1,18 @@
 #pragma once
+#include "Shader.h"
 #include <OpenGL/gl3.h>
 #include <vector>
 
 #define BUFFER_OFFSET(offset) ((GLvoid *)(offset))
 
-typedef GLuint ProgramHandle;
-
-typedef struct
-{
-  const char *filename;
-  GLenum type;
-  GLchar *source;
-} ShaderFile;
-
+typedef uint32_t ProgramHandle;
 class ShaderProgram
 {
 private:
-  std::vector<ShaderFile> shaders;
+  ProgramHandle programHandle;
 
 public:
   ShaderProgram();
-  ShaderProgram(const std::vector<ShaderFile> shaders);
-  ~ShaderProgram();
-  ProgramHandle compile();
+  void compile(const std::vector<Shader> shaders);
   GLint run(void *points, int sizeOfPoints);
 };
