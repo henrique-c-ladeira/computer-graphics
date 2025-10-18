@@ -1,42 +1,16 @@
-#include "Shader.h"
-#include "ShaderProgram.h"
-#include "Window.h"
-#include "shaderUtils.h"
 #include <iostream>
-#include <GLFW/glfw3.h>
-#include <glm/vec2.hpp>
-
-const int NumVertices = 4;
-
-GLfloat rotationAngle = 0.0;
-GLint rotationAngleLocation;
-
-void displayLoop()
-{
-  rotationAngle += 0.01;
-  glUniform1f(rotationAngleLocation, rotationAngle);
-  glDrawArrays(GL_TRIANGLE_FAN, 0, NumVertices);
-}
+#include "engine.h"
 
 int main(int argc, char **argv)
 {
-  glm::vec2 vertices[NumVertices] = {
-      glm::vec2(-0.5, -0.5),
-      glm::vec2(0.5, -0.5),
-      glm::vec2(0.5, 0.5),
-      glm::vec2(-0.5, 0.5),
-  };
 
-  Window window = Window();
-
-  std::vector<Shader> shaders = createShaders();
-
-  ShaderProgram shaderProgram = ShaderProgram();
-
-  shaderProgram.compile(shaders);
-  rotationAngleLocation = shaderProgram.run(vertices, sizeof(vertices));
-
-  window.display(displayLoop);
+  Engine engine = Engine();
+  if (!engine.init())
+  {
+    std::cerr << "Failed to initialize engine" << std::endl;
+    return -1;
+  }
+  engine.run();
 
   return 0;
 }

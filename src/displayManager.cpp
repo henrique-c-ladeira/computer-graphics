@@ -1,9 +1,12 @@
-#include "Window.h"
+#include "displayManager.h"
 
-Window::Window()
+DisplayManager::DisplayManager() {}
+DisplayManager::~DisplayManager() {}
+
+bool DisplayManager::init()
 {
   if (!glfwInit())
-    exit(EXIT_FAILURE);
+    return false;
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -14,12 +17,19 @@ Window::Window()
   if (!window)
   {
     glfwTerminate();
-    exit(EXIT_FAILURE);
+    return false;
   }
   glfwMakeContextCurrent(window);
+  return true;
 };
 
-void Window::display(void (*loop)())
+void DisplayManager::shutdown()
+{
+  glfwDestroyWindow(window);
+  glfwTerminate();
+}
+
+void DisplayManager::run(void (*loop)())
 {
   while (!glfwWindowShouldClose(window))
   {
@@ -35,8 +45,3 @@ void Window::display(void (*loop)())
     glfwPollEvents();
   }
 };
-
-Window::~Window()
-{
-  glfwTerminate();
-}
