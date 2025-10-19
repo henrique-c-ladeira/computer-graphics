@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Window.h"
-#include "ShaderProgram.h"
 #include <vector>
 
-class Engine
-{
-public:
+#include "Camera.h"
+#include "ShaderProgram.h"
+#include "Window.h"
+
+class Engine {
+ public:
   Engine();
   ~Engine();
 
@@ -14,9 +15,24 @@ public:
   void run();
   bool shutdown();
 
-private:
+ private:
   Window displayManager;
   ShaderProgram shaderProgram;
+  Camera camera;
+
   GLint rotationAngleLocation = -1;
   float rotationAngle = 0.0f;
+
+  // Input state
+  bool leftMouseDown = false;
+  bool rightMouseDown = false;
+  double lastMouseX = 0.0, lastMouseY = 0.0;
+
+  // Callbacks
+  static void cursorPosCallback(GLFWwindow* wnd, double xpos, double ypos);
+  static void mouseButtonCallback(GLFWwindow* wnd, int button, int action, int mods);
+  static void scrollCallback(GLFWwindow* wnd, double xoffset, double yoffset);
+
+  // Helper to retrieve the Engine instance from GLFW window user pointer
+  static Engine* fromWindow(GLFWwindow* wnd);
 };
