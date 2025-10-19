@@ -20,8 +20,7 @@ class Engine {
   ShaderProgram shaderProgram;
   Camera camera;
 
-  GLint rotationAngleLocation = -1;
-  float rotationAngle = 0.0f;
+  // No automatic rotation: render the model matrices provided by the caller or use identity.
 
   // Input state
   bool leftMouseDown = false;

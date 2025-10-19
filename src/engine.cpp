@@ -139,8 +139,8 @@ bool Engine::startup() {
   shaderProgram.compile(shaders);
 
   // Upload cube geometry (3 components per vertex)
-  rotationAngleLocation =
-      shaderProgram.setupGeometry((void*)cubeVertices, sizeof(cubeVertices), CubeVertexCount, 3);
+  // We don't need a rotation uniform location anymore; just set up geometry.
+  (void)shaderProgram.setupGeometry((void*)cubeVertices, sizeof(cubeVertices), CubeVertexCount, 3);
 
   // Initialize camera defaults
   camera.distance = 4.0f;
@@ -161,9 +161,8 @@ void Engine::run() {
   while (!displayManager.shouldClose()) {
     displayManager.clear();
 
-    // update model (rotation)
-    rotationAngle += 0.01f;
-    glm::mat4 model = glm::rotate(glm::mat4(1.0f), rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+    // No autorotation: use identity model matrix so the renderer shows whatever the model provides
+    glm::mat4 model = glm::mat4(1.0f);
 
     // Get current framebuffer size for correct aspect ratio
     int fbw = 800, fbh = 600;
