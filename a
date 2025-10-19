@@ -6,4 +6,4 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 # build
 cmake --build build --config Release
 # run
-./build/main
+./build/computer_graphics

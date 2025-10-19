@@ -1,15 +1,14 @@
 #include "Shader.h"
-#include <string>
+
 #include <iostream>
+#include <string>
 #include <vector>
 
 // Create a NULL-terminated string by reading the provided file
-static char *readShaderSource(const char *shaderFile)
-{
-  FILE *fp = fopen(shaderFile, "rb");
+static char* readShaderSource(const char* shaderFile) {
+  FILE* fp = fopen(shaderFile, "rb");
 
-  if (fp == NULL)
-  {
+  if (fp == NULL) {
     return NULL;
   }
 
@@ -17,7 +16,7 @@ static char *readShaderSource(const char *shaderFile)
   long size = ftell(fp);
 
   fseek(fp, 0L, SEEK_SET);
-  char *buf = new char[size + 1];
+  char* buf = new char[size + 1];
   fread(buf, 1, size, fp);
 
   buf[size] = '\0';
@@ -26,8 +25,7 @@ static char *readShaderSource(const char *shaderFile)
   return buf;
 }
 
-std::vector<Shader> Shader::createShaders()
-{
+std::vector<Shader> Shader::createShaders() {
   Shader vertexShader = Shader("shaders/vertexShader.glsl", vertexShaderType);
   Shader fragmentShader = Shader("shaders/fragmentShader.glsl", fragmentShaderType);
 
@@ -38,26 +36,23 @@ std::vector<Shader> Shader::createShaders()
   return shaders;
 }
 
-Shader::Shader(const char *filename, ShaderType shaderType)
-{
-  char *source = readShaderSource(filename);
-  if (source == NULL)
-  {
+Shader::Shader(const char* filename, ShaderType shaderType) {
+  char* source = readShaderSource(filename);
+  if (source == NULL) {
     std::cerr << "Failed to read " << filename << std::endl;
     exit(EXIT_FAILURE);
   }
   shaderHandle = glCreateShader(shaderType);
-  glShaderSource(shaderHandle, 1, (const GLchar **)&source, NULL);
+  glShaderSource(shaderHandle, 1, (const GLchar**)&source, NULL);
   glCompileShader(shaderHandle);
 
   GLint compiled;
   glGetShaderiv(shaderHandle, GL_COMPILE_STATUS, &compiled);
-  if (!compiled)
-  {
+  if (!compiled) {
     std::cerr << filename << " failed to compile:" << std::endl;
     GLint logSize;
     glGetShaderiv(shaderHandle, GL_INFO_LOG_LENGTH, &logSize);
-    char *logMsg = new char[logSize];
+    char* logMsg = new char[logSize];
     glGetShaderInfoLog(shaderHandle, logSize, NULL, logMsg);
     std::cerr << logMsg << std::endl;
     delete[] logMsg;
@@ -66,7 +61,4 @@ Shader::Shader(const char *filename, ShaderType shaderType)
   }
 }
 
-uint32_t Shader::getHandle()
-{
-  return shaderHandle;
-}
+uint32_t Shader::getHandle() const { return shaderHandle; }

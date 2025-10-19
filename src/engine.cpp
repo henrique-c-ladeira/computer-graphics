@@ -1,17 +1,17 @@
 #include "engine.h"
-#include "Shader.h"
+
 #include <glm/vec2.hpp>
 #include <iostream>
+
+#include "Shader.h"
 
 static const int NumVertices = 4;
 
 Engine::Engine() {}
 Engine::~Engine() {}
 
-bool Engine::startup()
-{
-  if (!displayManager.startup(512, 512, "Hello World"))
-    return false;
+bool Engine::startup() {
+  if (!displayManager.startup(512, 512, "Hello World")) return false;
 
   // Setup geometry and shaders (moved here from main.cpp)
   glm::vec2 vertices[NumVertices] = {
@@ -25,21 +25,18 @@ bool Engine::startup()
 
   shaderProgram = ShaderProgram::startup();
   shaderProgram.compile(shaders);
-  rotationAngleLocation = shaderProgram.run(vertices, sizeof(vertices));
+  rotationAngleLocation = shaderProgram.setupGeometry(vertices, sizeof(vertices), NumVertices, 2);
 
   return true;
 }
 
-void Engine::run()
-{
-  while (!displayManager.shouldClose())
-  {
+void Engine::run() {
+  while (!displayManager.shouldClose()) {
     displayManager.clear();
 
     // Update rotation + shader uniforms + draw
     rotationAngle += 0.01f;
-    if (rotationAngleLocation >= 0)
-      glUniform1f(rotationAngleLocation, rotationAngle);
+    if (rotationAngleLocation >= 0) glUniform1f(rotationAngleLocation, rotationAngle);
 
     shaderProgram.draw();
 
@@ -48,8 +45,7 @@ void Engine::run()
   }
 }
 
-bool Engine::shutdown()
-{
+bool Engine::shutdown() {
   displayManager.shutdown();
   return true;
 }

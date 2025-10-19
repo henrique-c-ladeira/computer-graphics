@@ -1,81 +1,77 @@
 #include "ShaderProgram.h"
+
 #include <iostream>
 
-GLfloat uTheta = 0.0;
+ShaderProgram::ShaderProgram() {}
 
-ShaderProgram::ShaderProgram()
-{
-}
-
-ShaderProgram ShaderProgram::startup()
-{
-  ShaderProgram shader = ShaderProgram();
+ShaderProgram ShaderProgram::startup() {
+  ShaderProgram shader;
   shader.programHandle = glCreateProgram();
   return shader;
 }
 
-void ShaderProgram::compile(const std::vector<Shader> shaders)
-{
-  for (Shader shader : shaders)
-  {
+void ShaderProgram::compile(const std::vector<Shader> shaders) {
+  for (const Shader& shader : shaders) {
     glAttachShader(programHandle, shader.getHandle());
   }
 
-  // link and check error
   glLinkProgram(programHandle);
 
   GLint linked;
   glGetProgramiv(programHandle, GL_LINK_STATUS, &linked);
-  if (!linked)
-  {
+  if (!linked) {
     std::cerr << "Shader program failed to link" << std::endl;
     GLint logSize;
     glGetProgramiv(programHandle, GL_INFO_LOG_LENGTH, &logSize);
-    char *logMsg = new char[logSize];
+    char* logMsg = new char[logSize];
     glGetProgramInfoLog(programHandle, logSize, NULL, logMsg);
     std::cerr << logMsg << std::endl;
     delete[] logMsg;
-
     exit(EXIT_FAILURE);
   }
 
   glUseProgram(programHandle);
 }
 
-GLint ShaderProgram::run(void *points, int sizeOfPoints)
-{
+GLint ShaderProgram::setupGeometry(void* points, int sizeOfPoints, GLsizei count,
+                                   GLint components) {
+  vertexCount = count;
 
-  // Create a vertex array object
-  GLuint vao;
-  glGenVertexArrays(1, &vao);
+  // Create VAO if not exists
+  if (vao == 0) glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
 
-  // Create and initialize a buffer object
-  GLuint buffer;
-  glGenBuffers(1, &buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, buffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeOfPoints, points,
-               GL_STATIC_DRAW);
+  // Create or update VBO
+  if (vbo == 0) glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glBufferData(GL_ARRAY_BUFFER, sizeOfPoints, points, GL_STATIC_DRAW);
 
-  // Initialize the vertex position attribute from the vertex shader
   GLuint loc = glGetAttribLocation(programHandle, "vPosition");
-  glEnableVertexAttribArray(loc);
-  glVertexAttribPointer(loc, 2, GL_FLOAT, GL_FALSE, 0,
-                        BUFFER_OFFSET(0));
+  if ((GLint)loc >= 0) {
+    glEnableVertexAttribArray(loc);
+    glVertexAttribPointer(loc, components, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+  }
 
-  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-  // Get the location of the rotation angle in the shader.
-  GLint thetaLoc = glGetUniformLocation(programHandle, "uTheta");
-  return thetaLoc;
+  return glGetUniformLocation(programHandle, "uTheta");
 }
 
-void ShaderProgram::draw()
-{
+void ShaderProgram::draw() {
+  if (programHandle == 0) return;
 
-  static GLint uThetaLocation = 0.0;
-  uTheta += 0.01;
+  glUseProgram(programHandle);
+  if (vao != 0) glBindVertexArray(vao);
 
-  glUniform1f(uThetaLocation, uTheta);
-  glDrawArrays(GL_TRIANGLE_FAN, 0, 420);
+  if (vertexCount > 0) glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
+}
+
+void ShaderProgram::setUniform1f(const char* name, float value) {
+  GLint loc = glGetUniformLocation(programHandle, name);
+  if (loc >= 0) glUniform1f(loc, value);
+}
+
+void ShaderProgram::setUniformMat4(const char* name, const float* matrix) {
+  GLint loc = glGetUniformLocation(programHandle, name);
+  if (loc >= 0) glUniformMatrix4fv(loc, 1, GL_FALSE, matrix);
 }
