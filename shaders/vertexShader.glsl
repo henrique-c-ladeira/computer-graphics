@@ -1,14 +1,16 @@
 #version 150
 
-in vec4 vPosition;
+in vec3 vPosition;
 
-uniform float uTheta;
+uniform mat4 uModel;
+uniform mat4 uView;
+uniform mat4 uProjection;
 
-out vec4 color;
+out vec3 vWorldPos;
 
-void main() {
-  gl_Position = vec4(vPosition.xy * mat2(cos(uTheta),-sin(uTheta), 
-                                          sin(uTheta), cos(uTheta)),
-                    vPosition.zw);
-  color = vec4((1.0 + vPosition.xyz) / 2.0, 1.0);
+void main()
+{
+  vec4 worldPos = uModel * vec4(vPosition, 1.0);
+  gl_Position = uProjection * uView * worldPos;
+  vWorldPos = worldPos.xyz;
 }
