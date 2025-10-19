@@ -13,6 +13,8 @@ private:
 
 public:
   ShaderProgram();
+  static ShaderProgram startup();
   void compile(const std::vector<Shader> shaders);
   GLint run(void *points, int sizeOfPoints);
+  void draw();
 };

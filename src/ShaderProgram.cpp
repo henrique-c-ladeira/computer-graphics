@@ -1,9 +1,17 @@
 #include "ShaderProgram.h"
 #include <iostream>
 
+GLfloat uTheta = 0.0;
+
 ShaderProgram::ShaderProgram()
 {
-  programHandle = glCreateProgram();
+}
+
+ShaderProgram ShaderProgram::startup()
+{
+  ShaderProgram shader = ShaderProgram();
+  shader.programHandle = glCreateProgram();
+  return shader;
 }
 
 void ShaderProgram::compile(const std::vector<Shader> shaders)
@@ -60,4 +68,14 @@ GLint ShaderProgram::run(void *points, int sizeOfPoints)
   // Get the location of the rotation angle in the shader.
   GLint thetaLoc = glGetUniformLocation(programHandle, "uTheta");
   return thetaLoc;
+}
+
+void ShaderProgram::draw()
+{
+
+  static GLint uThetaLocation = 0.0;
+  uTheta += 0.01;
+
+  glUniform1f(uThetaLocation, uTheta);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 420);
 }

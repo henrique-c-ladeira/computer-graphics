@@ -14,6 +14,7 @@ private:
   ShaderType shaderType;
 
 public:
+  static std::vector<Shader> createShaders();
   Shader(const char *filename, ShaderType shaderType);
   uint32_t getHandle();
 };

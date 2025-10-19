@@ -5,6 +5,10 @@ DisplayManager::~DisplayManager() {}
 
 bool DisplayManager::init()
 {
+}
+
+Window *Window::startup()
+{
   if (!glfwInit())
     return false;
 
@@ -12,15 +16,15 @@ bool DisplayManager::init()
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-  window = glfwCreateWindow(512, 512, "Hello World", NULL, NULL);
-  if (!window)
+  Window *window = new Window();
+  window->handle = glfwCreateWindow(512, 512, "Hello World", NULL, NULL);
+  if (!window->handle)
   {
     glfwTerminate();
     return false;
   }
-  glfwMakeContextCurrent(window);
-  return true;
+  glfwMakeContextCurrent(window->handle);
+  return window;
 };
 
 void DisplayManager::shutdown()
@@ -31,7 +35,7 @@ void DisplayManager::shutdown()
 
 void DisplayManager::run(void (*loop)())
 {
-  while (!glfwWindowShouldClose(window))
+  while (!glfwWindowShouldClose(handle))
   {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
@@ -39,7 +43,7 @@ void DisplayManager::run(void (*loop)())
 
     glFlush();
     /* Swap front and back buffers */
-    glfwSwapBuffers(window);
+    glfwSwapBuffers(handle);
 
     /* Poll for and process events */
     glfwPollEvents();

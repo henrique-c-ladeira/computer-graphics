@@ -25,6 +25,18 @@ static char *readShaderSource(const char *shaderFile)
   return buf;
 }
 
+std::vector<Shader> Shader::createShaders()
+{
+  Shader vertexShader = Shader("shaders/vertexShader.glsl", vertexShaderType);
+  Shader fragmentShader = Shader("shaders/fragmentShader.glsl", fragmentShaderType);
+
+  std::vector<Shader> shaders;
+  shaders.push_back(vertexShader);
+  shaders.push_back(fragmentShader);
+
+  return shaders;
+}
+
 Shader::Shader(const char *filename, ShaderType shaderType)
 {
   char *source = readShaderSource(filename);

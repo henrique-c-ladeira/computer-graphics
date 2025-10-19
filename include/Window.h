@@ -5,10 +5,11 @@
 class Window
 {
 private:
-  GLFWwindow *window;
+  GLFWwindow *handle;
 
 public:
   Window();
   ~Window();
+  static Window *startup();
   void display(void (*loop)());
 };
