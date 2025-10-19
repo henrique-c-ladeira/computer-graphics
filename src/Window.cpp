@@ -2,6 +2,10 @@
 
 Window::Window()
 {
+}
+
+Window *Window::startup()
+{
   if (!glfwInit())
     exit(EXIT_FAILURE);
 
@@ -9,19 +13,20 @@ Window::Window()
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-  window = glfwCreateWindow(512, 512, "Hello World", NULL, NULL);
-  if (!window)
+  Window *window = new Window();
+  window->handle = glfwCreateWindow(512, 512, "Hello World", NULL, NULL);
+  if (!window->handle)
   {
     glfwTerminate();
     exit(EXIT_FAILURE);
   }
-  glfwMakeContextCurrent(window);
+  glfwMakeContextCurrent(window->handle);
+  return window;
 };
 
 void Window::display(void (*loop)())
 {
-  while (!glfwWindowShouldClose(window))
+  while (!glfwWindowShouldClose(handle))
   {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
@@ -29,7 +34,7 @@ void Window::display(void (*loop)())
 
     glFlush();
     /* Swap front and back buffers */
-    glfwSwapBuffers(window);
+    glfwSwapBuffers(handle);
 
     /* Poll for and process events */
     glfwPollEvents();
