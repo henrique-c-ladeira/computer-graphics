@@ -1,5 +1,6 @@
 #pragma once
 #include "displayManager.h"
+#include "Window.h"
 
 class Engine
 {
@@ -7,10 +8,10 @@ public:
   Engine();
   ~Engine();
 
-  bool init();
+  bool startup();
   void run();
   bool shutdown();
 
 private:
-  DisplayManager displayManager;
+  Window displayManager;
 };

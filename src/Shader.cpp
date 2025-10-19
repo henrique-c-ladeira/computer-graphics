@@ -1,6 +1,7 @@
 #include "Shader.h"
 #include <string>
 #include <iostream>
+#include <vector>
 
 // Create a NULL-terminated string by reading the provided file
 static char *readShaderSource(const char *shaderFile)

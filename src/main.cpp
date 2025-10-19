@@ -13,12 +13,12 @@
 //   engine.run();
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
-#include "Window.h"
+// #include "Window.h"
 #include "Shader.h"
 #include "ShaderProgram.h"
 
 ShaderProgram shaderProgram;
-Window *window;
+// Window *window;
 
 void displayLoop()
 {
@@ -34,7 +34,14 @@ int main(int argc, char **argv)
       glm::vec2(-0.5, 0.5),
   };
 
-  window = Window::startup();
+  Engine engine = Engine();
+  if (!engine.startup())
+  {
+    std::cerr << "Failed to initialize engine" << std::endl;
+    return -1;
+  }
+
+  // window = Window::startup();
 
   std::vector<Shader> shaders = Shader::createShaders();
 
@@ -43,7 +50,9 @@ int main(int argc, char **argv)
   shaderProgram.compile(shaders);
   shaderProgram.run(vertices, sizeof(vertices));
 
-  window->display(displayLoop);
+  engine.run(shaderProgram.draw);
+
+  // window->display(displayLoop);
 
   return 0;
 }
