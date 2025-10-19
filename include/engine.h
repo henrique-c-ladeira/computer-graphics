@@ -1,6 +1,8 @@
 #pragma once
-#include "displayManager.h"
+
 #include "Window.h"
+#include "ShaderProgram.h"
+#include <vector>
 
 class Engine
 {
@@ -14,4 +16,7 @@ public:
 
 private:
   Window displayManager;
+  ShaderProgram shaderProgram;
+  GLint rotationAngleLocation = -1;
+  float rotationAngle = 0.0f;
 };

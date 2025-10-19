@@ -1,47 +1,60 @@
 #include "Window.h"
+#include <iostream>
 
-Window::Window()
-{
-}
+Window::Window() {}
 
-Window *Window::startup()
+bool Window::startup(int width, int height, const char *title)
 {
   if (!glfwInit())
-    exit(EXIT_FAILURE);
+    return false;
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-  Window *window = new Window();
-  window->handle = glfwCreateWindow(512, 512, "Hello World", NULL, NULL);
-  if (!window->handle)
+
+  handle = glfwCreateWindow(width, height, title, NULL, NULL);
+  if (!handle)
   {
     glfwTerminate();
-    exit(EXIT_FAILURE);
+    return false;
   }
-  glfwMakeContextCurrent(window->handle);
-  return window;
-};
 
-void Window::display(void (*loop)())
+  glfwMakeContextCurrent(handle);
+  return true;
+}
+
+bool Window::shouldClose() const
 {
-  while (!glfwWindowShouldClose(handle))
+  return glfwWindowShouldClose(handle);
+}
+
+void Window::pollEvents()
+{
+  glfwPollEvents();
+}
+
+void Window::swapBuffers()
+{
+  glfwSwapBuffers(handle);
+}
+
+void Window::clear()
+{
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Window::shutdown()
+{
+  if (handle)
   {
-    /* Render here */
-    glClear(GL_COLOR_BUFFER_BIT);
-    loop();
-
-    glFlush();
-    /* Swap front and back buffers */
-    glfwSwapBuffers(handle);
-
-    /* Poll for and process events */
-    glfwPollEvents();
+    glfwDestroyWindow(handle);
+    handle = nullptr;
   }
-};
+  glfwTerminate();
+}
 
 Window::~Window()
 {
-  glfwTerminate();
+  shutdown();
 }

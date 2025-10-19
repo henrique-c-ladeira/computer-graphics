@@ -1,56 +1,55 @@
 #include "engine.h"
 #include "Shader.h"
-#include "ShaderProgram.h"
 #include <glm/vec2.hpp>
+#include <iostream>
 
-// const int NumVertices = 4;
-// GLfloat rotationAngle = 0.0;
-// GLint rotationAngleLocation;
-
-// void displayLoop()
-// {
-//   rotationAngle += 0.01;
-//   glUniform1f(rotationAngleLocation, rotationAngle);
-//   glDrawArrays(GL_TRIANGLE_FAN, 0, NumVertices);
-// }
+static const int NumVertices = 4;
 
 Engine::Engine() {}
 Engine::~Engine() {}
 
 bool Engine::startup()
 {
-  displayManager = Window();
-  if (!displayManager.startup())
+  if (!displayManager.startup(512, 512, "Hello World"))
     return false;
-  return true;
 
-  glm::vec2 vertices[] = {
-      glm::vec2(-0.5, -0.5),
-      glm::vec2(0.5, -0.5),
-      glm::vec2(0.5, 0.5),
-      glm::vec2(-0.5, 0.5),
+  // Setup geometry and shaders (moved here from main.cpp)
+  glm::vec2 vertices[NumVertices] = {
+      glm::vec2(-0.5f, -0.5f),
+      glm::vec2(0.5f, -0.5f),
+      glm::vec2(0.5f, 0.5f),
+      glm::vec2(-0.5f, 0.5f),
   };
 
   std::vector<Shader> shaders = Shader::createShaders();
 
-  ShaderProgram shaderProgram = ShaderProgram::startup();
-
+  shaderProgram = ShaderProgram::startup();
   shaderProgram.compile(shaders);
-  shaderProgram.run(vertices, sizeof(vertices));
-}
+  rotationAngleLocation = shaderProgram.run(vertices, sizeof(vertices));
 
-void displayLoop()
-{
-  shaderProgram.draw();
+  return true;
 }
 
 void Engine::run()
 {
+  while (!displayManager.shouldClose())
+  {
+    displayManager.clear();
 
-  displayManager.display(displayLoop);
+    // Update rotation + shader uniforms + draw
+    rotationAngle += 0.01f;
+    if (rotationAngleLocation >= 0)
+      glUniform1f(rotationAngleLocation, rotationAngle);
+
+    shaderProgram.draw();
+
+    displayManager.swapBuffers();
+    displayManager.pollEvents();
+  }
 }
 
 bool Engine::shutdown()
 {
-  // Clean up and shut down the engine
+  displayManager.shutdown();
+  return true;
 }
